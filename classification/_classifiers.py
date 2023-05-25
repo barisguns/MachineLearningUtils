@@ -5,7 +5,7 @@ from sklearn.utils.validation import check_array
 
 class ShrinkageLDAClassifier(BaseEstimator, ClassifierMixin):
     """
-    This is a wrapper class which wraps sklearn LDA Classifier with covariance matrix shrinkage.
+    This is a wrapper class which wraps sklearn LDA Classifier with covariance matrix shrinkage (Ledoit-Wolf lemma).
     Covariance matrix shrinkage is an effective regularization technique for LDA especially when the
     input data has a large amount of variables (columns), relative to the number of data points (rows).
     """
