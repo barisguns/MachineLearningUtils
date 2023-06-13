@@ -14,7 +14,7 @@ def manual_range_column_select(X, variable_range_list):
     var_lst = []
     for i in variable_range_list:
         var_lst = var_lst + list(range(i[0], i[1]))
-    if X.shape == (1, 256):
+    if X.shape[0] == 1:
         X = X[0][var_lst].reshape(1, -1)
     else:
         X = X[:, var_lst]
