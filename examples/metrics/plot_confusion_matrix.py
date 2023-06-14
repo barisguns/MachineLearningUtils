@@ -1,5 +1,5 @@
 """
-The aim of this script is to show the use of custom scorer confusion_matrix_scorer from ml-utils.metrics.
+The aim of this script is to show the use of custom scorer confusion_matrix_scorer from ds-ml-utils.metrics.
 It uses the scorer in cross validation, and uses the cv result to plot the confusion matrix for each fold.
 """
 from sklearn.datasets import load_breast_cancer

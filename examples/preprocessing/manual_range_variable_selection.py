@@ -1,6 +1,6 @@
 """
 This script demonstrates the usability of the custom sklearn transformer ManualRangeVariableSelector
-from ml-utils.preprocessing. It uses the transformer in a pipeline, combines it with a regressor and
+from ds-ml-utils.preprocessing. It uses the transformer in a pipeline, combines it with a regressor and
 fits and predicts using the pipeline.
 """
 
