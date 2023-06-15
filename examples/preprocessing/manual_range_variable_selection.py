@@ -1,6 +1,6 @@
 """
 This script demonstrates the usability of the custom sklearn transformer ManualRangeVariableSelector
-from ds-ml-utils.preprocessing. It uses the transformer in a pipeline, combines it with a regressor and
+from mldsutils.preprocessing. It uses the transformer in a pipeline, combines it with a regressor and
 fits and predicts using the pipeline.
 """
 
@@ -12,7 +12,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 
-from dsutils.preprocessing import ManualRangeVariableSelector
+from mldsutils.preprocessing import ManualRangeVariableSelector
 
 # Load the Iris dataset
 data = load_diabetes()

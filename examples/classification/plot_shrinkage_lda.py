@@ -1,5 +1,5 @@
 """
-This module implements an example use of shrinkage LDA classifier from ds-ml-utils.classification.
+This module implements an example use of shrinkage LDA classifier from mldsutils.classification.
 It imports Iris data set, scales it, trains a shrinkage LDA classifier on it and shows the accuracy.
 It also plots the discriminators and data points.
 """
@@ -12,7 +12,7 @@ from sklearn.metrics import accuracy_score
 import numpy as np
 from sklearn.decomposition import PCA
 
-from dsutils.classification import ShrinkageLDAClassifier
+from mldsutils.classification import ShrinkageLDAClassifier
 
 # Load the Iris dataset
 data = load_iris()
