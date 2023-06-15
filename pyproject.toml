@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "ds-ml-utils"
+name = "mldsutils"
 version = "0.0.1"
 authors = [
   { name="Baris Gün Sürmeli", email="baris.suermeli@th-owl.de" },
