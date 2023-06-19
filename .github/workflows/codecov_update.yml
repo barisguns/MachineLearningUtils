@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: windows
+    runs-on: ubuntu-latest
     name: codecov
     steps:
     - uses: actions/checkout@v3
