@@ -1,3 +1,6 @@
+[![codecov.io](https://codecov.io/github/<barisguns>/<MachineLearningUtils>/coverage.svg?branch=master)]
+(https://codecov.io/github/<barisguns>/<MachineLearningUtils>?branch=master)
+
 # Machine Learning Utilities
 
 mldsutils is a Python module that offers various tools for machine learning and data science.
