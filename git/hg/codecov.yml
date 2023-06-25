@@ -4,7 +4,7 @@ coverage:
       default:
         # basic
         target: auto
-        threshold: 10%
+        threshold: 90%
         base: auto 
         flags: 
           - unit
