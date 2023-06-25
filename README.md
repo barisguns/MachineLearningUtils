@@ -1,5 +1,4 @@
-[![codecov.io](https://codecov.io/github/<barisguns>/<MachineLearningUtils>/coverage.svg?branch=master)]
-(https://codecov.io/github/<barisguns>/<MachineLearningUtils>)
+[![codecov](https://codecov.io/github/barisguns/MachineLearningUtils/branch/master/graph/badge.svg?token=UC2CQMEXQR)](https://codecov.io/github/barisguns/MachineLearningUtils)
 
 [![API workflow](https://github.com/barisguns/MachineLearningUtils/actions/workflows/codecov_update.yml/badge.svg)](https://github.com/barisguns/MachineLearningUtils/actions/workflows/codecov_update.yml)
 
