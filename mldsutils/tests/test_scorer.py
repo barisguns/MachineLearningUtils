@@ -117,7 +117,21 @@ def test_confusion_matrix_scorer_cross_val():
     assert isinstance(scores["test_fn"], np.ndarray)
     assert isinstance(scores["test_tp"], np.ndarray)
     assert isinstance(scores["test_fp"], np.ndarray)
-    # TODO: check if all the elements of the arrays are integers and their total is equivalent to number of data points
+
+    # Ensure that for each fold the scores are integers
+    for score in scores["test_tn"]:
+        assert isinstance(score, (int, np.integer))
+    for score in scores["test_fn"]:
+        assert isinstance(score, (int, np.integer))
+    for score in scores["test_tp"]:
+        assert isinstance(score, (int, np.integer))
+    for score in scores["test_fp"]:
+        assert isinstance(score, (int, np.integer))
+
+    # Ensure that for each fold the total number of scores equals the number of data points
+    for i in range(cv):
+        assert scores["test_tn"][i] + scores["test_fn"][i] + \
+               scores["test_tp"][i] + scores["test_fp"][i] == len(X)/cv
 
 
 # Test true_positive_scorer within cross-validation
