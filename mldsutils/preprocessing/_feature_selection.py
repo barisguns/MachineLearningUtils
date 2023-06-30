@@ -4,20 +4,23 @@ from sklearn.base import BaseEstimator, TransformerMixin
 def manual_range_column_select(X, variable_range_list):
     """
     Takes a 2d matrix and a list of tuples, eliminates all the columns from the matrix
-    whose indices does not fall between the values in any of the tuples in the list.
+    whose indices (left inclusive, right exclusive) does not fall between the values in any of the tuples in the list.
 
     :param X: 2d matrix.
     :param variable_range_list: list of tuples that contain the index values where the columns with the indices
     between those values will be kept and the rest will be filtered out.
     :return:
     """
-    var_lst = []
-    for i in variable_range_list:
-        var_lst = var_lst + list(range(i[0], i[1]))
-    if X.shape[0] == 1:
-        X = X[0][var_lst].reshape(1, -1)
-    else:
-        X = X[:, var_lst]
+
+    if variable_range_list and X.size != 0:
+        var_lst = []
+        for i in variable_range_list:
+            var_lst = var_lst + list(range(i[0], i[1]))
+        if X.shape[0] == 1:
+            X = X[0][var_lst].reshape(1, -1)
+        else:
+            X = X[:, var_lst]
+
     return X
 
 
