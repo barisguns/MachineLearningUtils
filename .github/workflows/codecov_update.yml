@@ -16,7 +16,7 @@ jobs:
        pip install pytest
        pip install pytest-cov
        pip install --upgrade setuptools
-       pip install scikit-learn
+       pip install scikit-learn==1.2.2
        pip install mldsutils
        pip install imblearn
     - name: Run tests and collect coverage
