@@ -1,7 +1,7 @@
 from sklearn.base import BaseEstimator
 import numpy as np
 
-from imblearn.base import BaseSampler, SamplerMixin
+from imblearn.base import SamplerMixin
 
 
 class NumpyPytorchDatatypeResampler(SamplerMixin, BaseEstimator):
