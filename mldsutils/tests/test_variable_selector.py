@@ -1,8 +1,6 @@
 import numpy as np
 from sklearn.datasets import make_regression
 from sklearn.pipeline import Pipeline
-from sklearn.model_selection import train_test_split
-from sklearn.compose import ColumnTransformer
 from mldsutils.preprocessing import manual_range_column_select, ManualRangeVariableSelector
 
 
