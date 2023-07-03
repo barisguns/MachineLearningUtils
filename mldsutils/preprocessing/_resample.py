@@ -20,10 +20,10 @@ class NumpyPytorchDatatypeResampler(SamplerMixin, BaseEstimator):
         return
 
     def fit_resample(self, X, y):
-        return X.astype(np.float32), y.astype(np.int64)
+        return self._fit_resample(X, y)
 
     def transform(self, X, y=None):
         return X.astype(np.float32), None, None
 
     def _fit_resample(self, X, y):
-        return X, y
+        return X.astype(np.float32), y.astype(np.int64)
