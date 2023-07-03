@@ -19,6 +19,9 @@ jobs:
        pip install scikit-learn==1.2.2
        pip install -e .
        pip install imblearn
+       pip install torch torchvision torchaudio
+       pip install skorch
+       
     - name: Run tests and collect coverage
       run: pytest --cov=./ --cov-report=xml
     - name: Upload coverage reports to Codecov with GitHub Action
