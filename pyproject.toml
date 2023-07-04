@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "mldsutils"
-version = "0.0.2"
+version = "0.0.2.1"
 authors = [
   { name="Baris Gün Sürmeli", email="baris.suermeli@th-owl.de" },
 ]
