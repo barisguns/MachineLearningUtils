@@ -1,37 +1,11 @@
 import numpy as np
 from sklearn.datasets import make_classification
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from mldsutils.pipeline import Pipeline
-from imblearn.base import SamplerMixin
-from sklearn.base import BaseEstimator
+from mldsutils.preprocessing import NumpyPytorchDatatypeResampler
 import torch
 import torch.nn as nn
-from torch.utils.data import Dataset, DataLoader
 import skorch
-from sklearn.utils.validation import check_is_fitted
-
-
-class NumpyPytorchDatatypeResampler(SamplerMixin, BaseEstimator):
-    """
-    This is a custom imblearn resampler which transforms data into formats that would work as PyTorch inputs.
-    It is especially useful when outputs of sklearn/imblearn transformers are to be given to PyTorch models as input.
-    """
-
-    def __init__(self):
-        pass
-
-    def fit(self, X, y):
-        return self
-
-    def fit_resample(self, X, y):
-        return X.astype(np.float32), y.astype(np.int64)
-
-    def transform(self, X, y=None):
-        return X.astype(np.float32), None, None
-
-    def _fit_resample(self, X, y):
-        return X, y
 
 
 # Custom PyTorch model
@@ -57,8 +31,9 @@ def test_custom_resampler():
 
     # Define your custom resampler
     resampler = NumpyPytorchDatatypeResampler()
-    # Make sure fit function of the resampler returns self
-    assert resampler == resampler.fit(X, y)
+    # Make sure fit function of the resampler returns None
+    x = resampler.fit(X, y)
+    assert x is None
 
     # Create the PyTorch model
     model = MyModel()
