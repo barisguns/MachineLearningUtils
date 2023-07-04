@@ -2,5 +2,4 @@ include MANIFEST.in
 
 # exclude from sdist
 recursive-exclude venv *
-recursive-exclude tests *
 recursive-exclude .git *
