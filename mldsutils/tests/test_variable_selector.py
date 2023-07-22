@@ -30,9 +30,14 @@ def test_manual_range_variable_selector():
     # Define the variable range list for selection
     variable_range_list = [(1, 3), (7, 9)]
 
+    variable_selector = ManualRangeVariableSelector(variable_range_list)
+    # Make sure fit function of the variable selector returns None
+    x = variable_selector.fit(X, y)
+    assert x is None
+
     # Create the transformer pipeline
     transformer = Pipeline([
-        ('manual_selector', ManualRangeVariableSelector(variable_range_list))
+        ('manual_selector', variable_selector)
     ])
 
     # Apply the transformer
