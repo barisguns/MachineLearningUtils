@@ -3,7 +3,7 @@ from sklearn.base import BaseEstimator
 from sklearn.cross_decomposition import PLSRegression
 from mldsutils.base import SamplerMixin
 from copy import copy
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, r2_score
 from math import sqrt
 from scipy.stats import f
 
@@ -22,7 +22,6 @@ class QresPlsOutlierElim(SamplerMixin, BaseEstimator):
         self.test_x_loadings = None
         self.test_y_scores = None
         self.test_y_loadings = None
-        self.indices_retained = None
         return
 
     def window_outlier_check(self, data_point, window_matrix):
@@ -68,9 +67,6 @@ class QresPlsOutlierElim(SamplerMixin, BaseEstimator):
         for i in range(len(Q)):
             if Q[i] < self.Q_conf:
                 indices_retained.append(i)
-
-        # TODO: REMOVE BELOW TEST CODE:
-        indices_retained = [1, 2, 3, 10, 15]
 
         X = X[indices_retained, :]
         y = y[indices_retained]
@@ -128,9 +124,6 @@ class QresPlsOutlierElim(SamplerMixin, BaseEstimator):
                     y = np.array(y)
                 y = y[self.indices_retained]
 
-            # TODO: REMOVE BELOW TEST CODE:
-            self.indices_retained = [1, 2, 3, 10, 15]
-
             X = X[self.indices_retained, :]
             # Case of Prediction/Online Outlier Elimination
             
@@ -153,7 +146,6 @@ class TsqPlsOutlierElim(SamplerMixin, BaseEstimator):
         self.test_x_loadings = None
         self.test_y_scores = None
         self.test_y_loadings = None
-        self.indices_retained = None
         return
 
     def window_outlier_check(self, data_point, window_matrix):
@@ -239,20 +231,8 @@ class TsqPlsOutlierElim(SamplerMixin, BaseEstimator):
                     y = np.array(y)
                 y = y[self.indices_retained]
 
-            # TODO: REMOVE BELOW TEST CODE:
-            self.indices_retained = [2, 4]
-
             X = X[self.indices_retained, :]
             # Case of Prediction/Online Outlier Elimination
             if y is None:
                 return (X,)
         return X, y
-
-
-def outlier_rmse_scorer(estimator, X_test, y_test):
-    y_pred = estimator.predict(X_test)
-    if len(y_test) != len(y_pred):
-        remain_inds = estimator.indices_retained
-        y_test = [y_test[x] for x in remain_inds]
-    score = (sqrt(mean_squared_error(y_test, y_pred)))
-    return score

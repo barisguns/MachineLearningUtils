@@ -5,6 +5,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.datasets import make_regression
 from sklearn.model_selection import cross_val_score
 from preprocessing import QresPlsOutlierElim, TsqPlsOutlierElim
+from mldsutils.metrics import outlier_rmse_scorer, outlier_r2_scorer
 
 X, y = make_regression(n_samples=100, n_features=50, n_informative=40, random_state=42)
 
@@ -19,12 +20,13 @@ pipelinezz = Pipeline([
 # pipe = pipeline.make_pipeline(StandardScaler(), LinearRegression())
 # pipe = pp.make_pipeline(StandardScaler(), LinearRegression())
 
-# cv_results = cross_val_score(pipe, X, y, scoring="r2", cv=3)
+cv_results = cross_val_score(pipelinezz, X, y, scoring=outlier_r2_scorer, cv=3)
+print(cv_results)
 
-pipelinezz.fit(X, y)
-y_pred = pipelinezz.predict(X)
-print(y_pred)
-print(pipelinezz.indices_retained)
+# pipelinezz.fit(X, y)
+# y_pred = pipelinezz.predict(X)
+# print(y_pred)
+# print(pipelinezz.indices_retained)
 
 # qres = QresPlsOutlierElim(conf_lev=0)
 # qres.fit_resample(X, y)
