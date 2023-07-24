@@ -1,7 +1,7 @@
 from sklearn.base import BaseEstimator
 import numpy as np
 
-from imblearn.base import SamplerMixin
+from mldsutils.base import SamplerMixin
 
 
 class NumpyPytorchDatatypeResampler(SamplerMixin, BaseEstimator):
@@ -13,16 +13,8 @@ class NumpyPytorchDatatypeResampler(SamplerMixin, BaseEstimator):
     because it can also transform "y" in the fit phase, which we need when preparing input for Pytorch.
 
     """
-    def __init__(self):
-        return
 
-    def fit(self, X, y):
-        return
-
-    def fit_resample(self, X, y):
-        return self._fit_resample(X, y)
-
-    def transform(self, X, y=None):
+    def _resample(self, X, y=None):
         return X.astype(np.float32), None, None
 
     def _fit_resample(self, X, y):
