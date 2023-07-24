@@ -15,7 +15,7 @@ class NumpyPytorchDatatypeResampler(SamplerMixin, BaseEstimator):
     """
 
     def _resample(self, X, y=None):
-        return X.astype(np.float32), None, None
+        return (X.astype(np.float32),)
 
     def _fit_resample(self, X, y):
         return X.astype(np.float32), y.astype(np.int64)

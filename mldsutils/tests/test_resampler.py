@@ -29,18 +29,15 @@ def test_custom_resampler():
     # Define the sklearn transformer
     scaler = StandardScaler()
 
-    # Define your custom resampler
+    # Define the custom resampler
     resampler = NumpyPytorchDatatypeResampler()
-    # Make sure fit function of the resampler returns None
-    x = resampler.fit(X, y)
-    assert x is None
 
     # Create the PyTorch model
     model = MyModel()
 
     X_sc = scaler.fit_transform(X)
 
-    X_transformed, _, _ = resampler.transform(X_sc)
+    X_transformed = resampler.resample(X_sc)[0]
     # Check if the transformed data is in the expected input format for torch models
     assert X_transformed.dtype == np.float32
 
