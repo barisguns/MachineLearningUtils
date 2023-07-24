@@ -43,7 +43,7 @@ class ManualRangeVariableSelector(BaseEstimator, TransformerMixin):
         return
 
     def fit(self, X, y=None):
-        return self
+        return None
 
     def transform(self, X, y=None):
         """
