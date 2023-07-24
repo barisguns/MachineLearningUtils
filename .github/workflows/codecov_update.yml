@@ -16,9 +16,9 @@ jobs:
        pip install pytest
        pip install pytest-cov
        pip install --upgrade setuptools
-       pip install scikit-learn==1.2.2
+       pip install scikit-learn==1.3.0
        pip install -e .
-       pip install imblearn
+       pip install -U imbalanced-learn==0.11.0
        pip install torch torchvision torchaudio
        pip install skorch
        
