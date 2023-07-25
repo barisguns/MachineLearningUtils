@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.cross_decomposition import PLSRegression
+from sklearn.neighbors import LocalOutlierFactor
 from mldsutils.base import SamplerMixin
 from copy import copy
 from scipy.stats import f
@@ -173,3 +174,22 @@ class TsqPlsOutlierElim(BasePlsOutlierElim):
                          dfd=X.shape[0]) * self.pls_n_components * \
                    (X.shape[0] - 1) / (X.shape[0] - self.pls_n_components)
         return Tsq, Tsq_conf
+
+
+class LOFResampler(SamplerMixin, BaseEstimator):
+
+    def __init__(self):
+        super().__init__()
+        self.lof = LocalOutlierFactor(n_neighbors=2, novelty=True)
+
+    def _fit_resample(self, X, y):
+        self.lof.fit(X, y)
+        is_inlier = self.lof.predict(X)
+        X = X[is_inlier == 1]
+        y = y[is_inlier == 1]
+        return X, y
+
+    def _resample(self, X, y=None):
+        is_inlier = self.lof.predict(X)
+        X = X[is_inlier == 1]
+        return (X,)
