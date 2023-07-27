@@ -77,7 +77,7 @@ class BasePlsOutlierElim(SamplerMixin, BaseEstimator):
 class QresPlsOutlierElim(BasePlsOutlierElim):
 
     def __init__(self, conf_lev=0.95, pls_n_components=2, prediction=True):
-        super().__init__(conf_lev, pls_n_components, prediction)
+        super().__init__(conf_lev=conf_lev, pls_n_components=pls_n_components, prediction=prediction)
         return
 
     def _fit_resample(self, X, y):
@@ -176,20 +176,39 @@ class TsqPlsOutlierElim(BasePlsOutlierElim):
         return Tsq, Tsq_conf
 
 
-class LOFResampler(SamplerMixin, BaseEstimator):
+class LOFResampler(LocalOutlierFactor, SamplerMixin, BaseEstimator):
 
-    def __init__(self):
-        super().__init__()
-        self.lof = LocalOutlierFactor(n_neighbors=2, novelty=True)
+    def __init__(self,
+                 n_neighbors=20,
+                 *,
+                 algorithm="auto",
+                 leaf_size=30,
+                 metric="minkowski",
+                 p=2,
+                 metric_params=None,
+                 contamination="auto",
+                 novelty=False,
+                 n_jobs=None):
+        super().__init__(n_neighbors=n_neighbors,
+                         algorithm=algorithm,
+                         leaf_size=leaf_size,
+                         metric=metric,
+                         p=p,
+                         metric_params=metric_params,
+                         contamination=contamination,
+                         novelty=novelty,
+                         n_jobs=n_jobs)
 
     def _fit_resample(self, X, y):
-        self.lof.fit(X, y)
-        is_inlier = self.lof.predict(X)
+        self.fit(X, y)
+        is_inlier = self.predict(X)
+        self.indices_retained = np.argwhere(is_inlier == 1).reshape((1, -1))[0]
         X = X[is_inlier == 1]
         y = y[is_inlier == 1]
         return X, y
 
     def _resample(self, X, y=None):
-        is_inlier = self.lof.predict(X)
+        is_inlier = self.predict(X)
+        self.indices_retained = np.argwhere(is_inlier == 1).reshape((1, -1))[0]
         X = X[is_inlier == 1]
         return (X,)

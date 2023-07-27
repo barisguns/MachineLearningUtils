@@ -1,4 +1,5 @@
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, f1_score
+from ._outlier_elimination import get_retained_y_test
 
 
 def confusion_matrix_scorer(clf, X, y):
@@ -71,3 +72,10 @@ def false_positive_scorer(clf, X, y):
     y_pred = clf.predict(X)
     cm = confusion_matrix(y, y_pred)
     return cm[0, 1]
+
+
+def outlier_f1_scorer(estimator, X, y):
+    y_pred = estimator.predict(X)
+    y_test = get_retained_y_test(estimator, y)
+    score = f1_score(y_test, y_pred)
+    return score
