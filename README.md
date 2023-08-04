@@ -7,6 +7,7 @@
 mldsutils is a Python module that offers various tools for machine learning and data science.
 It is built up on scikit-learn and rather focuses on specific tools that could be useful in different application domains.
 Domains in its scope include but not limited to: Industrial processes, spectroscopy and authentication.
+One of the main functionalities of mldsutils is an interface for implementing sklearn-compatible pipelines which on-demand include outlier eliminators as transformers.
 
 ## Documentation
 
