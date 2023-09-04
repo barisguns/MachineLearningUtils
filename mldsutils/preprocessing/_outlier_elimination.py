@@ -1,3 +1,7 @@
+"""
+This module contains outlier eliminators which inherits mldsutils.base.SamplerMixin.
+"""
+
 import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.cross_decomposition import PLSRegression
@@ -177,7 +181,9 @@ class TsqPlsOutlierElim(BasePlsOutlierElim):
 
 
 class LOFResampler(LocalOutlierFactor, SamplerMixin, BaseEstimator):
-
+    """
+    Wrapper class that forms an mldsutils resampler out of sklearn.neighbors.LocalOutlierFactor.
+    """
     def __init__(self,
                  n_neighbors=20,
                  *,

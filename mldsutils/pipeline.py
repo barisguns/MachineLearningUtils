@@ -1,8 +1,18 @@
 """
-The :mod:`imblearn.pipeline` module implements utilities to build a
-composite estimator, as a chain of transforms, samples and estimators.
+The :mod:`mldsutils.pipeline` module uses imblearn resampler interface and extends it with the ability to
+ remove data points through the pipeline in prediction.
+ In order to make pipeline work with sklearn cross validation and hyper-parameter optimization system,
+ this module implements this feature by keeping an "indices_retained" list as a variable of Pipeline class,
+ which is intended to contain the arrays of indices of the remaining data points after each resampling step
+ in the pipeline.
+ Each mldsutils resampler should set their own indices_retained variable to the array of remaining data points.
+ Pipeline class implements a resample() method, which accesses the indices_retained arrays of each
+ resampler that contain the indices of the data points that will remain after resampling.
+ During scoring, the "indices_retained" of the pipeline is accessed by the custom scorers, in order to remove
+ the elements of y which corresponds to a removed outlier of X, so that predicted y array and the array of real y labels
+ are consistent for comparison.
 """
-# Adapted from scikit-learn
+# Adapted from imb-learn
 
 # Author: Edouard Duchesnay
 #         Gael Varoquaux

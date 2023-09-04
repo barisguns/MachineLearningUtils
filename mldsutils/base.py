@@ -1,4 +1,13 @@
+"""
+Implements SamplerMixin class which extends imblearn.base.SamplerMixin.
+It currently overrides fit_resample() method, in order to disable input checks, this will be removed soon.
+It implements abstract class _resample() which should be overriden by custom resampler classes and should
+contain the resampling logic.
+Resamplers have an indices_retained attribute, which is intended to be set in resample() and/or fit_resample(),
+in  order to expose the user the retained indices after resampling e.g. outlier elimination.
+Cross validation and hyper-parameter optimization will only be possible if indices_retained are set by the resampler.
 
+"""
 from imblearn import base
 from abc import abstractmethod
 
