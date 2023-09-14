@@ -11,15 +11,7 @@ Cross validation and hyper-parameter optimization will only be possible if indic
 from imblearn import base
 from abc import abstractmethod
 
-from sklearn.preprocessing import label_binarize
-from sklearn.utils import parse_version
-from sklearn.utils.multiclass import check_classification_targets
-
-from imblearn.utils import check_sampling_strategy, check_target_type
-from imblearn.utils._param_validation import validate_parameter_constraints
-from imblearn.utils._validation import ArraysTransformer
-import numpy as np
-
+from .utils import ArraysTransformer
 
 class SamplerMixin(base.SamplerMixin):
 
@@ -48,23 +40,18 @@ class SamplerMixin(base.SamplerMixin):
                 y_resampled : array-like of shape (n_samples_new,)
                     The corresponding label of `X_resampled`.
                 """
-        # check_classification_targets(y)
-        # arrays_transformer = ArraysTransformer(X, y)
-        # X, y, binarize_y = self._check_X_y(X, y)
 
-        # self.sampling_strategy_ = check_sampling_strategy(
-        #     self.sampling_strategy, y, self._sampling_type
-        # )
+        # TODO: input validation
+        # TODO: parameter validation
+        # Input validation and parameter validation of Imblearn is removed because they are specifically
+        # tailored for classification tasks.
+        arrays_transformer = ArraysTransformer(X, y)
 
-        X, y = self._fit_resample(X, y)
+        output = self._fit_resample(X, y)
 
-        # y_ = (
-        #     label_binarize(output[1], classes=np.unique(y)) if binarize_y else output[1]
-        # )
         #
-        # X_, y_ = arrays_transformer.transform(output[0], y_)
-        # return (X_, y_) if len(output) == 2 else (X_, y_, output[2])
-        return X, y
+        X_, y_ = arrays_transformer.transform(output[0], output[1])
+        return (X_, y_) if len(output) == 2 else (X_, y_, output[2])
 
     @abstractmethod
     def _fit_resample(self, X, y):
@@ -101,40 +88,23 @@ class SamplerMixin(base.SamplerMixin):
                 (n_samples, n_features)
             Matrix containing the data which have to be sampled.
 
-        y : array-like of shape (n_samples,)
-            Corresponding label for each sample in X.
+        y : None
+        For API consistency.
 
         Returns
         -------
         X_resampled : {array-like, dataframe, sparse matrix} of shape \
                 (n_samples_new, n_features)
             The array containing the resampled data.
-
-        y_resampled : array-like of shape (n_samples_new,)
-            The corresponding label of `X_resampled`.
         """
-        # check_classification_targets(y)
-        # arrays_transformer = ArraysTransformer(X, y)
-        # X, y, binarize_y = self._check_X_y(X, y)
-        #
-        # self.sampling_strategy_ = check_sampling_strategy(
-        #     self.sampling_strategy, y, self._sampling_type
-        # )
 
+        # TODO: input validation
+        # TODO: parameter validation
+        arrays_transformer = ArraysTransformer(X, y)
         output = self._resample(X, y)
-        X = output[0]
-        if len(output) == 2:
-            y = output[1]
 
-        # y_ = (
-        #     label_binarize(output[1], classes=np.unique(y)) if binarize_y else output[1]
-        # )
-        #
-        # X_, y_ = arrays_transformer.transform(output[0], y_)
-
-        if len(output) == 1:
-            return X
-        return X, y
+        return arrays_transformer.transform(output[0], output[1]) if (
+                len(output) == 2) else arrays_transformer.transform(output[0])
 
     @abstractmethod
     def _resample(self, X, y=None):
@@ -155,8 +125,6 @@ class SamplerMixin(base.SamplerMixin):
                 (n_samples_new, n_features)
             The array containing the resampled data.
 
-        y_resampled : ndarray of shape (n_samples_new,)
-            The corresponding label of `X_resampled`.
         """
         pass
 

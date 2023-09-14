@@ -94,7 +94,7 @@ class QresPlsOutlierElim(BasePlsOutlierElim):
 
         Q, Q_conf = self._get_Q_and_Qconf(X)
 
-        X, y, _ = self._get_retained_indices_X_y(X, y, Q, Q_conf)
+        X, y, self.indices_retained = self._get_retained_indices_X_y(X, y, Q, Q_conf)
 
         if self.prediction is True:
             self.pls.fit(X, y)
@@ -150,7 +150,7 @@ class TsqPlsOutlierElim(BasePlsOutlierElim):
 
         Tsq, Tsq_conf = self._get_tsq_and_tsqconf(X, 0)
 
-        X, y, _ = self._get_retained_indices_X_y(X, y, Tsq, Tsq_conf)
+        X, y, self.indices_retained = self._get_retained_indices_X_y(X, y, Tsq, Tsq_conf)
         if self.prediction is True:
             self.pls.fit(X, y)
         return X, y
@@ -176,7 +176,7 @@ class TsqPlsOutlierElim(BasePlsOutlierElim):
         Tsq_conf = f.ppf(q=self.conf_lev,
                          dfn=self.pls_n_components,
                          dfd=X.shape[0]) * self.pls_n_components * \
-                   (X.shape[0] - 1) / (X.shape[0] - self.pls_n_components)
+                        (X.shape[0] - 1) / (X.shape[0] - self.pls_n_components)
         return Tsq, Tsq_conf
 
 

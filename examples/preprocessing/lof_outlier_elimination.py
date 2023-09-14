@@ -32,9 +32,9 @@ y = np.concatenate([y, outliers_y])
 
 n = 100
 
-ax.set_xlabel('X Label')
-ax.set_ylabel('Y Label')
-ax.set_zlabel('Z Label')
+ax.set_xlabel('X1')
+ax.set_ylabel('X2')
+ax.set_zlabel('y')
 
 # plt.show()
 
@@ -90,18 +90,22 @@ ax.set_zlabel('Z Label')
 
 
 sc = StandardScaler()
-lof = LOFResampler(n_neighbors=20, novelty=True)
+oe = LOFResampler(n_neighbors=20, novelty=True)
+# oe = QresPlsOutlierElim(conf_lev=0.95)
 lr = LinearRegression()
 
 X_train_sc = sc.fit_transform(X_train)
-X_train_lof, y_train_lof = lof.fit_resample(X_train_sc, y_train)
-X_train_lof_cp = X_train_lof.copy()
-y_train_lof_cp = y_train_lof.copy()
+X_train_sc_cp = X_train_sc.copy()
+y_train_sc_cp = y_train.copy()
+
+X_train_lof, y_train_lof = oe.fit_resample(X_train_sc, y_train)
+
+fig = plt.figure()
 ax = fig.add_subplot(projection='3d')
 ax.scatter(X_train_lof[:, 0], X_train_lof[:, 1], y_train_lof, marker="o", c="blue")
-inds_retained = lof.indices_retained
-X_detected_outliers = np.delete(X_train_lof_cp, inds_retained[0])
-y_detected_outliers = np.delete(y_train_lof_cp, inds_retained[0])
+inds_retained = oe.indices_retained
+X_detected_outliers = np.delete(X_train_sc_cp, inds_retained, axis=0)
+y_detected_outliers = np.delete(y_train_sc_cp, inds_retained, axis=0)
 ax.scatter(X_detected_outliers[:, 0], X_detected_outliers[:, 1], y_detected_outliers, marker="o", c="orange")
 plt.show()
 
