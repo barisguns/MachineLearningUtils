@@ -1,6 +1,6 @@
 from sklearn.metrics import mean_squared_error, r2_score
 from math import sqrt
-from ._outlier_elimination import get_retained_y_test
+from mldsutils.model_selection import get_retained_y_test
 
 
 def outlier_rmse_scorer(estimator, X_test, y_test):

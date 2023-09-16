@@ -49,7 +49,6 @@ class SamplerMixin(base.SamplerMixin):
 
         output = self._fit_resample(X, y)
 
-        #
         X_, y_ = arrays_transformer.transform(output[0], output[1])
         return (X_, y_) if len(output) == 2 else (X_, y_, output[2])
 
@@ -102,6 +101,8 @@ class SamplerMixin(base.SamplerMixin):
         # TODO: parameter validation
         arrays_transformer = ArraysTransformer(X, y)
         output = self._resample(X, y)
+
+        # TODO: indices_retained validation
 
         return arrays_transformer.transform(output[0], output[1]) if (
                 len(output) == 2) else arrays_transformer.transform(output[0])

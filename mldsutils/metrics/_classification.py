@@ -1,5 +1,5 @@
 from sklearn.metrics import confusion_matrix, f1_score
-from ._outlier_elimination import get_retained_y_test
+from mldsutils.model_selection import get_retained_y_test
 
 
 def confusion_matrix_scorer(clf, X, y):

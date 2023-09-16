@@ -14,19 +14,15 @@ The :mod:`mldsutils.pipeline` module uses imblearn resampler interface and exten
 """
 # Adapted from imb-learn
 
-# Author: Edouard Duchesnay
-#         Gael Varoquaux
-#         Virgile Fritsch
-#         Alexandre Gramfort
-#         Lars Buitinck
-#         Christos Aridas
-#         Guillaume Lemaitre <g.lemaitre58@gmail.com>
-# License: BSD
 from sklearn.utils.metaestimators import available_if
 from imblearn import pipeline
 from sklearn import pipeline as skpipe
-from imblearn.base import _ParamsValidationMixin
 from imblearn.utils._param_validation import HasMethods, validate_params
+from .model_selection import get_retained_y_test
+from sklearn.metrics import check_scoring
+from sklearn.metrics._scorer import _check_multimetric_scoring
+from .metrics._metrics import _METRICS
+import copy
 
 __all__ = ["Pipeline"]
 
@@ -146,8 +142,9 @@ class Pipeline(pipeline.Pipeline):
 
     # BaseEstimator interface
 
-    def __init__(self, steps, *, memory=None, verbose=False):
+    def __init__(self, steps, *, scorer=None, memory=None, verbose=False):
         self.steps = steps
+        self.scorer = scorer
         self.memory = memory
         self.verbose = verbose
         self.indices_retained = []
@@ -191,6 +188,69 @@ class Pipeline(pipeline.Pipeline):
             else:
                 Xt = transform.transform(Xt)
         return self.steps[-1][1].predict(Xt, **predict_params)
+
+    # TODO: OTHER PREDICT METHODS
+
+    def score(self, X, y=None, sample_weight=None):
+        """
+        Apply transforms, and score with the final estimator
+
+        Parameters
+        ----------
+        X : iterable
+            Data to predict on. Must fulfill input requirements of first step
+            of the pipeline.
+        y : iterable, default=None
+            Targets used for scoring. Must fulfill label requirements for all
+            steps of the pipeline.
+        sample_weight : array-like, default=None
+            If not None, this argument is passed as ``sample_weight`` keyword
+            argument to the ``score`` method of the final estimator.
+
+        Returns
+        -------
+        score : float
+        """
+
+        scoring = self.scorer
+        if scoring is None:
+            return self._final_estimator.score(X, y)
+
+        elif callable(scoring):
+            return scoring(self, X, y)
+
+        elif isinstance(scoring, str):
+            if scoring.startswith("neg_"):
+                _sign = -1
+            else:
+                _sign = 1
+            try:
+                metric = copy.deepcopy(_METRICS[scoring])
+            except KeyError:
+                raise ValueError(
+                    "%r is not a valid scoring value. "
+                    "Use sklearn.metrics.get_scorer_names() "
+                    "to get valid options." % scoring
+                )
+            if isinstance(metric, tuple):
+                _score_func = metric[0]
+                scoring_kwargs = metric[1]
+            else:
+                _score_func = metric
+                scoring_kwargs = {}
+        else:
+            raise ValueError(
+                "%r is either not a valid scoring value or a scorer that is added after sklearn 1.3.0. "
+                "Please either use a scorer that is listed by mldsutils.metrics.get_scorer_names() or use a "
+                "custom outlier elimination scorer."
+                 % scoring
+            )
+
+        y_pred = self.predict(X)
+
+        y = get_retained_y_test(self, y)
+
+        return _sign * _score_func(y, y_pred, **scoring_kwargs)
 
 
 @validate_params(
