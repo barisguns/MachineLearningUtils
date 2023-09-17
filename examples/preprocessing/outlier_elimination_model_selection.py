@@ -13,6 +13,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import ListedColormap
 from mldsutils.metrics import outlier_r2_scorer
+from sklearn.metrics import r2_score
+from mldsutils.metrics import make_outlier_scorer
 
 # Generate synthetic regression dataset
 X, y, coef = make_regression(n_samples=200, n_features=2, noise=20, coef=True, random_state=42)
@@ -26,7 +28,7 @@ y = np.concatenate([y, outliers_y])
 
 pipelinezz = Pipeline([
     ("sc", StandardScaler()),
-    ("lof", LOFResampler(n_neighbors=20, novelty=True)),
+    # ("lof", LOFResampler(n_neighbors=20, novelty=True)),
     ("lr", LinearRegression())
     ],
     scorer="r2"
@@ -43,7 +45,7 @@ inds_retained = pipelinezz.indices_retained
 print(y_pred)
 print(pipelinezz.indices_retained)
 
-
+cv_results = cross_val_score(pipelinezz, X, y, scoring=make_outlier_scorer(r2_score), cv=3)
 # cv_results = cross_val_score(pipelinezz, X, y, scoring=outlier_r2_scorer, cv=3)
-cv_results = cross_val_score(pipelinezz, X, y, cv=3)
+# cv_results = cross_val_score(pipelinezz, X, y, cv=3)
 print(cv_results)

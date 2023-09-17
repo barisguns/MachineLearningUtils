@@ -7,6 +7,7 @@ from ._classification import outlier_f1_scorer
 from ._regression import outlier_rmse_scorer
 from ._regression import outlier_r2_scorer
 from ._metrics import get_scorer_names
+from ._scorer import make_outlier_scorer
 
 __all__ = ["confusion_matrix_scorer",
            "true_positive_scorer",
@@ -16,5 +17,6 @@ __all__ = ["confusion_matrix_scorer",
            "outlier_rmse_scorer",
            "outlier_r2_scorer",
            "outlier_f1_scorer",
-           "get_scorer_names"]
+           "get_scorer_names",
+           "make_outlier_scorer"]
 
