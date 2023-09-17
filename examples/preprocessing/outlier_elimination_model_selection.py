@@ -3,7 +3,7 @@ from sklearn import pipeline as pp
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression
 from sklearn.datasets import make_regression
-from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import cross_val_score, cross_validate
 from mldsutils.preprocessing import LOFResampler
 from mldsutils.preprocessing import QresPlsOutlierElim
 from mldsutils.metrics import outlier_r2_scorer
@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import ListedColormap
 from mldsutils.metrics import outlier_r2_scorer
-from sklearn.metrics import r2_score
+from sklearn.metrics import r2_score, mean_squared_error
 from mldsutils.metrics import make_outlier_scorer
 
 # Generate synthetic regression dataset
@@ -28,7 +28,7 @@ y = np.concatenate([y, outliers_y])
 
 pipelinezz = Pipeline([
     ("sc", StandardScaler()),
-    # ("lof", LOFResampler(n_neighbors=20, novelty=True)),
+    ("lof", LOFResampler(n_neighbors=20, novelty=True)),
     ("lr", LinearRegression())
     ],
     scorer="r2"
@@ -45,7 +45,9 @@ inds_retained = pipelinezz.indices_retained
 print(y_pred)
 print(pipelinezz.indices_retained)
 
-cv_results = cross_val_score(pipelinezz, X, y, scoring=make_outlier_scorer(r2_score), cv=3)
+# cv_results = cross_val_score(pipelinezz, X, y, scoring=make_outlier_scorer(r2_score), cv=3)
 # cv_results = cross_val_score(pipelinezz, X, y, scoring=outlier_r2_scorer, cv=3)
 # cv_results = cross_val_score(pipelinezz, X, y, cv=3)
+cv_results = cross_validate(pipelinezz, X, y, scoring={"r2": make_outlier_scorer(r2_score),
+                                                       "mse": make_outlier_scorer(mean_squared_error)}, cv=3)
 print(cv_results)

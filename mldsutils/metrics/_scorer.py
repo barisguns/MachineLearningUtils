@@ -272,3 +272,4 @@ class _OutlierThresholdScorer(_ThresholdScorer):
         scoring_kwargs = {**self._kwargs, **kwargs}
         y = get_retained_y_test(clf, y)
         return self._sign * self._score_func(y, y_pred, **scoring_kwargs)
+
