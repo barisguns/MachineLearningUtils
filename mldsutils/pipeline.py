@@ -189,7 +189,129 @@ class Pipeline(pipeline.Pipeline):
                 Xt = transform.transform(Xt)
         return self.steps[-1][1].predict(Xt, **predict_params)
 
-    # TODO: OTHER PREDICT METHODS
+    @available_if(skpipe._final_estimator_has("predict_proba"))
+    def predict_proba(self, X, **predict_proba_params):
+        """Transform the data, and apply `predict_proba` with the final estimator.
+
+        Call `transform` of each transformer in the pipeline. The transformed
+        data are finally passed to the final estimator that calls
+        `predict_proba` method. Only valid if the final estimator implements
+        `predict_proba`.
+
+        Parameters
+        ----------
+        X : iterable
+            Data to predict on. Must fulfill input requirements of first step
+            of the pipeline.
+
+        **predict_proba_params : dict of string -> object
+            Parameters to the `predict_proba` called at the end of all
+            transformations in the pipeline.
+
+        Returns
+        -------
+        y_proba : ndarray of shape (n_samples, n_classes)
+            Result of calling `predict_proba` on the final estimator.
+        """
+        Xt = X
+        for _, name, transform in self._iter(with_final=False, filter_passthrough=False, filter_resample=False):
+            if hasattr(transform, "_resample"):
+                Xt = transform.resample(Xt)
+                self.indices_retained.append(transform.indices_retained)
+            else:
+                Xt = transform.transform(Xt)
+        return self.steps[-1][1].predict_proba(Xt, **predict_proba_params)
+
+    @available_if(skpipe._final_estimator_has("decision_function"))
+    def decision_function(self, X):
+        """Transform the data, and apply `decision_function` with the final estimator.
+
+        Call `transform` of each transformer in the pipeline. The transformed
+        data are finally passed to the final estimator that calls
+        `decision_function` method. Only valid if the final estimator
+        implements `decision_function`.
+
+        Parameters
+        ----------
+        X : iterable
+            Data to predict on. Must fulfill input requirements of first step
+            of the pipeline.
+
+        Returns
+        -------
+        y_score : ndarray of shape (n_samples, n_classes)
+            Result of calling `decision_function` on the final estimator.
+        """
+        Xt = X
+        for _, name, transform in self._iter(with_final=False, filter_passthrough=False, filter_resample=False):
+            if hasattr(transform, "_resample"):
+                Xt = transform.resample(Xt)
+                self.indices_retained.append(transform.indices_retained)
+            else:
+                Xt = transform.transform(Xt)
+        return self.steps[-1][1].decision_function(Xt)
+
+    @available_if(skpipe._final_estimator_has("score_samples"))
+    def score_samples(self, X):
+        """Transform the data, and apply `score_samples` with the final estimator.
+
+        Call `transform` of each transformer in the pipeline. The transformed
+        data are finally passed to the final estimator that calls
+        `score_samples` method. Only valid if the final estimator implements
+        `score_samples`.
+
+        Parameters
+        ----------
+        X : iterable
+            Data to predict on. Must fulfill input requirements of first step
+            of the pipeline.
+
+        Returns
+        -------
+        y_score : ndarray of shape (n_samples,)
+            Result of calling `score_samples` on the final estimator.
+        """
+        Xt = X
+        for _, _, transformer in self._iter(with_final=False, filter_passthrough=False, filter_resample=False):
+            if hasattr(transformer, "_resample"):
+                Xt = transformer.resample(Xt)
+                self.indices_retained.append(transformer.indices_retained)
+            else:
+                Xt = transformer.transform(Xt)
+        return self.steps[-1][1].score_samples(Xt)
+
+    @available_if(skpipe._final_estimator_has("predict_log_proba"))
+    def predict_log_proba(self, X, **predict_log_proba_params):
+        """Transform the data, and apply `predict_log_proba` with the final estimator.
+
+        Call `transform` of each transformer in the pipeline. The transformed
+        data are finally passed to the final estimator that calls
+        `predict_log_proba` method. Only valid if the final estimator
+        implements `predict_log_proba`.
+
+        Parameters
+        ----------
+        X : iterable
+            Data to predict on. Must fulfill input requirements of first step
+            of the pipeline.
+
+        **predict_log_proba_params : dict of string -> object
+            Parameters to the ``predict_log_proba`` called at the end of all
+            transformations in the pipeline.
+
+        Returns
+        -------
+        y_log_proba : ndarray of shape (n_samples, n_classes)
+            Result of calling `predict_log_proba` on the final estimator.
+        """
+        Xt = X
+        for _, name, transform in self._iter(with_final=False, filter_passthrough=False, filter_resample=False):
+            if hasattr(transform, "_resample"):
+                Xt = transform.resample(Xt)
+                self.indices_retained.append(transform.indices_retained)
+            else:
+                Xt = transform.transform(Xt)
+        return self.steps[-1][1].predict_log_proba(Xt, **predict_log_proba_params)
 
     def score(self, X, y=None, sample_weight=None):
         """
@@ -220,28 +342,23 @@ class Pipeline(pipeline.Pipeline):
             return scoring(self, X, y)
 
         elif isinstance(scoring, str):
-            if scoring.startswith("neg_"):
-                _sign = -1
-            else:
-                _sign = 1
             try:
-                metric = copy.deepcopy(_METRICS[scoring])
+                _score_func = _METRICS[scoring][0]
+                _sign = _METRICS[scoring][1]
+                scoring_kwargs = _METRICS[scoring][2]
             except KeyError:
                 raise ValueError(
                     "%r is not a valid scoring value. "
                     "Use sklearn.metrics.get_scorer_names() "
                     "to get valid options." % scoring
                 )
-            if isinstance(metric, tuple):
-                _score_func = metric[0]
-                scoring_kwargs = metric[1]
-            else:
-                _score_func = metric
-                scoring_kwargs = {}
+            if sample_weight is not None:
+                scoring_kwargs["sample_weight"] = sample_weight
+
         else:
             raise ValueError(
-                "%r is either not a valid scoring value or a scorer that is added after sklearn 1.3.0. "
-                "Please either use a scorer that is listed by mldsutils.metrics.get_scorer_names() or use a "
+                "%r is not a valid scoring value."
+                "Please either use a scorer that is listed by sklearn.metrics.get_scorer_names() or use a "
                 "custom outlier elimination scorer."
                  % scoring
             )

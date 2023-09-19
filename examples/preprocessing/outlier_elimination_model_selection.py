@@ -31,7 +31,7 @@ pipelinezz = Pipeline([
     ("lof", LOFResampler(n_neighbors=20, novelty=True)),
     ("lr", LinearRegression())
     ],
-    scorer="r2"
+    scorer="neg_root_mean_squared_error"
 )
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
@@ -47,7 +47,7 @@ print(pipelinezz.indices_retained)
 
 # cv_results = cross_val_score(pipelinezz, X, y, scoring=make_outlier_scorer(r2_score), cv=3)
 # cv_results = cross_val_score(pipelinezz, X, y, scoring=outlier_r2_scorer, cv=3)
-# cv_results = cross_val_score(pipelinezz, X, y, cv=3)
-cv_results = cross_validate(pipelinezz, X, y, scoring={"r2": make_outlier_scorer(r2_score),
-                                                       "mse": make_outlier_scorer(mean_squared_error)}, cv=3)
+cv_results = cross_val_score(pipelinezz, X, y, cv=3)
+# cv_results = cross_validate(pipelinezz, X, y, scoring={"r2": make_outlier_scorer(r2_score),
+#                                                        "mse": make_outlier_scorer(mean_squared_error)}, cv=3)
 print(cv_results)
